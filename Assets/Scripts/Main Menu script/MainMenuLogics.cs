@@ -12,21 +12,19 @@ using UnityEngine.UI;
 
 public class MainMenuLogics : MonoBehaviour
 {
-    [SerializeField]
-    Button singleplayerButton;
-	[SerializeField]
-	Button joinViaCodeButton;
-	[SerializeField]
-	Button CreateLobbyButton;
-	[SerializeField]
-	Button BackToMainMenuButton;
-	[SerializeField]
-	TMP_InputField lobbyCodeInput;
-	[SerializeField]
-	GameObject LobbyMenu;
-	[SerializeField]
-	GameObject MainMenu;
+    [SerializeField] Button singleplayerButton;
+	[SerializeField] Button joinViaCodeButton;
+	[SerializeField] Button CreateLobbyButton;
+	[SerializeField] Button BackToMainMenuButton;
+	[SerializeField] TMP_InputField lobbyCodeInput;
+	[SerializeField] GameObject LobbyMenu;
+	[SerializeField] GameObject MainMenu;
+	[SerializeField] GameObject LobbyPanel;
+	[SerializeField] Toggle IsLobbyPrivate;
+
 	SteamIntegration steam;
+
+	float updateDelay = 1.5f;
 
 	public static MainMenuLogics Instance { get; private set; } = null;
 
@@ -40,16 +38,30 @@ public class MainMenuLogics : MonoBehaviour
 		CreateLobbyButton.onClick.AddListener(delegate { SwitchMainToLobby(); });
 		BackToMainMenuButton.onClick.AddListener(SwitchLobbyToMainMenu);
 		singleplayerButton.onClick.AddListener(StartSingleplayerGame);
+		IsLobbyPrivate.onValueChanged.AddListener(ChangeLobbyPrivacy);
 
-		SteamIntegration.Instance.GetOpenLobbys();
+
+	}
+
+	private void ChangeLobbyPrivacy(bool arg0)
+	{
+		if (IsLobbyPrivate.isOn)
+		{
+			SteamIntegration.Instance.CurrentLobby.Value.SetPrivate();
+		}
+		else
+		{
+			SteamIntegration.Instance.CurrentLobby.Value.SetPublic();
+		}
 	}
 
 
 	// Update is called once per frame
 	void Update()
     {
-        
-    }
+		StartCoroutine(UpdateLobbyUI());
+
+	}
 
     public void DisableButtonsWithoutNickname() 
     {
@@ -64,7 +76,7 @@ public class MainMenuLogics : MonoBehaviour
 
 
 	}
-	public void SwitchMainToLobby() 
+	void SwitchMainToLobby() 
 	{
 		LobbyMenu.gameObject.SetActive(true);
 		MainMenu.gameObject.SetActive(false);
@@ -96,27 +108,25 @@ public class MainMenuLogics : MonoBehaviour
 			NetworkManager.Singleton.StartClient();
 		}
 	}
-	
-	//private async void FillLobbyMembersData() 
-	//{
-	//	var lol = GetSteamAvatar();
-	//	await Task.WhenAll(lol);
-	//	GameObject playerImage = GameObject.Find("PlayerImage");
-	//	playerImage.GetComponent<Image>().sprite = lol.Result?.Convert();
-	//}
 
-	//public async Task<Image?> GetSteamAvatar()
-	//{
-	//	try
-	//	{
-	//		// Get Avatar using await
-	//		return await SteamFriends.GetLargeAvatarAsync(SteamClient.SteamId);
-	//	}
-	//	catch (Exception e)
-	//	{
-	//		// If something goes wrong, log it
-	//		Debug.Log(e);
-	//		return null;
-	//	}
-	//}
+	void ShowOpenLobbys() 
+	{
+		if (SteamIntegration.Instance.lobbys != null)
+		{
+			var lobbys = SteamIntegration.Instance.lobbys;
+			GameObject content = GameObject.Find("Content");
+
+
+			foreach (var item in lobbys)
+			{
+				Instantiate(LobbyPanel,content.transform);
+			}
+		}
+	}
+
+	IEnumerator UpdateLobbyUI() 
+	{
+		yield return new WaitForSeconds(updateDelay);
+		ShowOpenLobbys();
+	}
 }
