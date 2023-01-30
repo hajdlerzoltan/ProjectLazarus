@@ -18,9 +18,11 @@ public class SteamIntegration : MonoBehaviour
 
 	private FacepunchTransport transport = null;
 
+	private ulong steamID;
+
 	public Lobby? CurrentLobby { get; set; } = null;
 
-	Lobby[] lobby = null;
+	public Lobby[] lobbys = null;
 
 
 	private void Awake()
@@ -49,12 +51,13 @@ public class SteamIntegration : MonoBehaviour
 		SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
 		SteamFriends.OnGameLobbyJoinRequested += OnLobbyJoinRequest;
 
+		steamID = SteamClient.SteamId.Value;
+
 	}
 
 	private void Update()
 	{
 		SteamClient.RunCallbacks();
-		StartCoroutine("GetOpenLobbys");
 	}
 
 	private void OnDestroy()
@@ -92,29 +95,22 @@ public class SteamIntegration : MonoBehaviour
 		Debug.Log("Hosting is started!");
 
 		await SteamMatchmaking.CreateLobbyAsync();
-		lobby = await SteamMatchmaking.LobbyList.WithKeyValue("name", "TestLobby").RequestAsync();
-
-		foreach (var item in lobby)
-		{
-			Debug.Log(item.Data.GetEnumerator());
-		}
 	}
 
-	public async void Disconnect() 
+	public void Disconnect() 
 	{
 		CurrentLobby?.Leave();
 		if (NetworkManager.Singleton == null)
 		{
 			return;
 		}
-		NetworkManager.Singleton.Shutdown();
-
-		lobby = await SteamMatchmaking.LobbyList.RequestAsync();
-		foreach (var item in lobby)
+		else if (NetworkManager.Singleton !=null)
 		{
-			Debug.Log(item.Data.GetEnumerator());
+			NetworkManager.Singleton.Shutdown();
 		}
+		
 	}
+
 
 	public void StartClient(SteamId id)
 	{
@@ -147,7 +143,7 @@ public class SteamIntegration : MonoBehaviour
 
 	private void OnLobbyLeave(Lobby lobby, Friend friend)
 	{
-		
+
 	}
 
 	private void OnLobbyJoin(Lobby lobby, Friend friend)
@@ -164,7 +160,7 @@ public class SteamIntegration : MonoBehaviour
 		}
 		else if (NetworkManager.Singleton.IsClient)
 		{
-			MainMenuLogics.Instance.SwitchMainToLobby();
+			//MainMenuLogics.Instance.SwitchMainToLobby();
 			StartClient(lobby.Id);
 		}
 
@@ -178,9 +174,10 @@ public class SteamIntegration : MonoBehaviour
 		}
 
 		lobby.SetFriendsOnly();
-		lobby.SetData("name", "TestLobby");
+		lobby.SetData("Lobbyname", "TestLobby");
+		var asd = lobby.GetData("Lobbyname");
 		lobby.SetJoinable(true);
-
+		CurrentLobby = lobby;
 		Debug.Log("Lobby created");
 	}
 	#endregion
@@ -208,18 +205,14 @@ public class SteamIntegration : MonoBehaviour
 
 	public async void GetOpenLobbys() 
 	{
-		lobby = await SteamMatchmaking.LobbyList.WithKeyValue("name", "TestLobby").RequestAsync();
-		if (lobby == null)
+		lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Lobbyname", "TestLobby").RequestAsync();
+		if (lobbys == null)
 		{
-			Debug.Log("No lobby found");
+			Debug.Log("not found");
 		}
-		else
+		else 
 		{
-			foreach (var item in lobby)
-			{
-				Debug.Log(item);
-			}
+			Debug.Log("found");
 		}
-		
 	}
 }
