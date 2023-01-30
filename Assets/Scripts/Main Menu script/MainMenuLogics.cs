@@ -72,7 +72,6 @@ public class MainMenuLogics : MonoBehaviour
 	}
 	void SwitchLobbyToMainMenu()
 	{
-		//LobbyManager.Instance.LeaveLobby();
 		MainMenu.gameObject.SetActive(true);
 		LobbyMenu.gameObject.SetActive(false);
 		SteamIntegration.Instance.Disconnect();

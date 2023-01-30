@@ -18,6 +18,8 @@ public class SteamIntegration : MonoBehaviour
 
 	private FacepunchTransport transport = null;
 
+	private ulong steamID;
+
 	public Lobby? CurrentLobby { get; set; } = null;
 
 	Lobby[] lobby = null;
@@ -49,6 +51,7 @@ public class SteamIntegration : MonoBehaviour
 		SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
 		SteamFriends.OnGameLobbyJoinRequested += OnLobbyJoinRequest;
 
+		steamID = SteamClient.SteamId.Value;
 	}
 
 	private void Update()
@@ -100,21 +103,20 @@ public class SteamIntegration : MonoBehaviour
 		}
 	}
 
-	public async void Disconnect() 
+	public void Disconnect() 
 	{
 		CurrentLobby?.Leave();
 		if (NetworkManager.Singleton == null)
 		{
 			return;
 		}
-		NetworkManager.Singleton.Shutdown();
-
-		lobby = await SteamMatchmaking.LobbyList.RequestAsync();
-		foreach (var item in lobby)
+		else if (NetworkManager.Singleton !=null)
 		{
-			Debug.Log(item.Data.GetEnumerator());
+			NetworkManager.Singleton.Shutdown();
 		}
+		
 	}
+
 
 	public void StartClient(SteamId id)
 	{
@@ -147,7 +149,7 @@ public class SteamIntegration : MonoBehaviour
 
 	private void OnLobbyLeave(Lobby lobby, Friend friend)
 	{
-		
+
 	}
 
 	private void OnLobbyJoin(Lobby lobby, Friend friend)
