@@ -154,6 +154,7 @@ public class SteamIntegration : MonoBehaviour
 	{
 		Debug.Log($"Client connected by himself: {friend.Id}");
 		StartClient(friend.Id);
+		//test
 	}
 
 	private void OnLobbyEntered(Lobby lobby)
