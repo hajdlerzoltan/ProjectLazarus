@@ -13,10 +13,12 @@ I update this list as soon as possible("at least i try") when a new contributor 
 * Contributor(s)
   - @An0nymus7
   
-## Goal/Roadmap
+## Goal/Roadmap(Rather a todo list LOL)
 <sub>Gonna be updated in the mean time</sub>
 * [ ] **Make the basic game mechanics**
   - [x] PlayerController
+  - [ ] Hit system
+  - [ ] Revive system
   - [ ] Working "mystery box" _(in progress...)_
   - [ ] buyable perks _(in progress...)_
   - [ ] **guns...lot of guns...**
@@ -32,6 +34,27 @@ I update this list as soon as possible("at least i try") when a new contributor 
     - [ ] Zombie model
     - [ ] Zombie animations
     - [ ] Zombie sounds
+  - [ ] Round based gamemode
+  - [ ] Server Pause
 * [ ] **Make a working multiplayer mode with lobbys**
   - [ ] NetCode host an client system _(in progress...)_
   - [ ] Lobby system _(in progress...)_
+* [ ] **Make a better UI**
+  - [ ] Better menu UI
+  - [ ] Better ingame UI (HUD)
+* [ ] **Write the story**
+  - [ ] **Create the players caracters**
+    - [ ] Create "Personality"(Write dialogs)
+    - [ ] Record the dialogs
+    - [ ] Code the interactions with dialogs
+    - [ ] Make caracter models
+    - [ ] Animate the caracters
+  - [ ] **Create the first map**
+    - [ ] Create props and models
+    - [ ] Decide the map size
+    - [ ] Find a cool Easter Egg song
+    - [ ] Make the Easter Egg(Quest)
+ * [ ] **Test the Sh*t out of it**
+ * [ ] **Make a playable demo to decide the project future**
+ * [ ] **Publish on Steam???**
+ * [ ] **Updates and try to keep the game and a community alive**
