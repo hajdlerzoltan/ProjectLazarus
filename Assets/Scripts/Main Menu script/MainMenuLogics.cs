@@ -1,4 +1,5 @@
 using Steamworks;
+using Steamworks.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,9 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -22,9 +25,9 @@ public class MainMenuLogics : MonoBehaviour
 	[SerializeField] GameObject LobbyPanel;
 	[SerializeField] Toggle IsLobbyPrivate;
 
-	SteamIntegration steam;
+	List<Lobby> steamLobbies = new List<Lobby>();
 
-	float updateDelay = 1.5f;
+	float updateDelay = 3f;
 
 	public static MainMenuLogics Instance { get; private set; } = null;
 
@@ -40,7 +43,7 @@ public class MainMenuLogics : MonoBehaviour
 		singleplayerButton.onClick.AddListener(StartSingleplayerGame);
 		IsLobbyPrivate.onValueChanged.AddListener(ChangeLobbyPrivacy);
 
-
+		StartCoroutine(UpdateLobbyUI(updateDelay));
 	}
 
 	private void ChangeLobbyPrivacy(bool arg0)
@@ -59,8 +62,8 @@ public class MainMenuLogics : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		StartCoroutine(UpdateLobbyUI());
-
+		CheckPlayerIsInTheMainMenu();
+		//InvokeRepeating("ShowOpenLobbys", 0, 3);
 	}
 
     public void DisableButtonsWithoutNickname() 
@@ -76,17 +79,17 @@ public class MainMenuLogics : MonoBehaviour
 
 
 	}
-	void SwitchMainToLobby() 
+	public void SwitchMainToLobby() 
 	{
 		LobbyMenu.gameObject.SetActive(true);
 		MainMenu.gameObject.SetActive(false);
 
 	}
-	void SwitchLobbyToMainMenu()
+	public void SwitchLobbyToMainMenu()
 	{
 		MainMenu.gameObject.SetActive(true);
 		LobbyMenu.gameObject.SetActive(false);
-		SteamIntegration.Instance.Disconnect();
+		SteamManager.Instance.LeaveLobby();
 
 	}
 
@@ -109,24 +112,54 @@ public class MainMenuLogics : MonoBehaviour
 		}
 	}
 
-	void ShowOpenLobbys() 
+	async void ShowOpenLobbys() 
 	{
-		if (SteamIntegration.Instance.lobbys != null)
+		Lobby[] lobby = await SteamManager.Instance.GetOpenLobbys();
+		if (CheckPlayerIsInTheMainMenu())
 		{
-			var lobbys = SteamIntegration.Instance.lobbys;
-			GameObject content = GameObject.Find("Content");
-
-
-			foreach (var item in lobbys)
+			if (lobby == null)
 			{
-				Instantiate(LobbyPanel,content.transform);
+				Debug.Log("no lobby found");
 			}
+			else
+			{
+				foreach (var item in lobby)
+				{
+					steamLobbies.Add(item);
+				}
+
+				GameObject content = GameObject.Find("Content");
+
+				foreach (var item in steamLobbies)
+				{
+					GameObject lobbyOnUI = Instantiate(LobbyPanel, content.transform);
+					GameObject.Find("LobbyHostName").GetComponent<TextMeshProUGUI>().text = item.Owner.Name;
+				}
+				steamLobbies.Clear();
+			}
+		}
+
+	}
+	//Checking the player if he is in the menu or not
+	bool CheckPlayerIsInTheMainMenu() 
+	{
+		GameObject mainmenu = GameObject.Find("MainMenu");
+		if (!mainmenu.activeInHierarchy)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
 		}
 	}
 
-	IEnumerator UpdateLobbyUI() 
+	IEnumerator UpdateLobbyUI(float delay) 
 	{
-		yield return new WaitForSeconds(updateDelay);
-		ShowOpenLobbys();
+		while (true)
+		{
+			ShowOpenLobbys();
+			yield return new WaitForSecondsRealtime(delay);
+		}
 	}
 }

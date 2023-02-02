@@ -464,7 +464,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2782212044885199124}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9144512504404602741}
+        m_TargetAssemblyTypeName: GetLobbyDataToPanel, Assembly-CSharp
+        m_MethodName: JoinLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2782212044992661998
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,6 +758,7 @@ GameObject:
   - component: {fileID: 2782212045498708437}
   - component: {fileID: 2782212045498708439}
   - component: {fileID: 2782212045498708438}
+  - component: {fileID: 9144512504404602741}
   m_Layer: 5
   m_Name: OpenLobbyPanel
   m_TagString: Untagged
@@ -816,3 +829,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 100
+--- !u!114 &9144512504404602741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2782212045498708436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fb9b69444901db46951229d67725003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyName: 
+  lobbyNameText: {fileID: 2782212044543841527}

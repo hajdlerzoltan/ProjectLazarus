@@ -56,6 +56,7 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Main Menu script\GetLobbyDataToPanel.cs" />
     <Compile Include="Assets\Scripts\PlayerScript\GetPlayerSteamName.cs" />
     <Compile Include="Assets\EvolveGames\RealisticFPSController\Scripts\HeadBob.cs" />
     <Compile Include="Assets\EvolveGames\RealisticFPSController\Scripts\PlayerController.cs" />
@@ -83,13 +84,12 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\Scripts\MysteryBoxController.cs" />
-    <Compile Include="Assets\Scripts\Main Menu script\RelayManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\Scripts\QuickController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
     <Compile Include="Assets\Scripts\SpeedController.cs" />
-    <Compile Include="Assets\Scripts\Main Menu script\LobbyManager.cs" />
+    <Compile Include="Assets\Scripts\Main Menu script\LobbyListingManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
     <Compile Include="Assets\Scripts\SteamIntegration.cs" />
@@ -103,8 +103,8 @@
     <Compile Include="Assets\EvolveGames\RealisticFPSController\Scripts\HandsHolder.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\Scripts\TapController.cs" />
+    <Compile Include="Assets\Scripts\SteamAndNetwork\SteamManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
-    <Compile Include="Assets\Scripts\Main Menu script\RelayHostData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\EvolveGames\RealisticFPSController\Scripts\MENU.cs" />
@@ -114,10 +114,8 @@
     <Compile Include="Assets\Scripts\Main Menu script\MainMenuLogics.cs" />
     <Compile Include="Assets\EvolveGames\RealisticFPSController\Scripts\HandsSmooth.cs" />
     <Compile Include="Assets\Scripts\ZombieScript.cs" />
-    <Compile Include="Assets\Scripts\Main Menu script\RelayJoinData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\Scripts\Helpers\NetworkString.cs" />
-    <Compile Include="Assets\Scripts\Main Menu script\RelayTest.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\EvolveGames\RealisticFPSController\Scripts\Viewpoint.cs" />
   </ItemGroup>

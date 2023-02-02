@@ -9,6 +9,7 @@ using Steamworks.Data;
 using System;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class SteamIntegration : MonoBehaviour
 {
@@ -27,37 +28,39 @@ public class SteamIntegration : MonoBehaviour
 
 	private void Awake()
 	{
-		if (Instance == null)
-		{
-			Instance = this;
-		}
-		else
-		{
-			Destroy(Instance);
-			return;
-		}
+		
+		//if (Instance == null)
+		//{
+		//	Instance = this;
+		//}
+		//else
+		//{
+		//	Destroy(Instance);
+		//	return;
+		//}
+
 	}
 
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		transport = GetComponent<FacepunchTransport>();
-		SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
-		SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
-		SteamMatchmaking.OnLobbyMemberJoined += OnLobbyJoin;
-		SteamMatchmaking.OnLobbyMemberLeave += OnLobbyLeave;
-		SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
-		SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
-		SteamFriends.OnGameLobbyJoinRequested += OnLobbyJoinRequest;
+		//transport = GetComponent<FacepunchTransport>();
+		//SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
+		//SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
+		//SteamMatchmaking.OnLobbyMemberJoined += OnLobbyJoin;
+		//SteamMatchmaking.OnLobbyMemberLeave += OnLobbyLeave;
+		//SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
+		//SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
+		//SteamFriends.OnGameLobbyJoinRequested += OnLobbyJoinRequest;
 
-		steamID = SteamClient.SteamId.Value;
+		//steamID = SteamClient.SteamId.Value;
 
 	}
 
 	private void Update()
 	{
-		SteamClient.RunCallbacks();
+		//SteamClient.RunCallbacks();
 	}
 
 	private void OnDestroy()
@@ -166,7 +169,7 @@ public class SteamIntegration : MonoBehaviour
 
 	}
 
-	private void OnLobbyCreated(Result result, Lobby lobby)
+	private async void OnLobbyCreated(Result result, Lobby lobby)
 	{
 		if (result != Result.OK)
 		{
@@ -178,6 +181,8 @@ public class SteamIntegration : MonoBehaviour
 		var asd = lobby.GetData("Lobbyname");
 		lobby.SetJoinable(true);
 		CurrentLobby = lobby;
+		
+		Lobby[] lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
 		Debug.Log("Lobby created");
 	}
 	#endregion
@@ -203,16 +208,19 @@ public class SteamIntegration : MonoBehaviour
 	}
 	#endregion
 
-	public async void GetOpenLobbys() 
-	{
-		lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Lobbyname", "TestLobby").RequestAsync();
-		if (lobbys == null)
-		{
-			Debug.Log("not found");
-		}
-		else 
-		{
-			Debug.Log("found");
-		}
-	}
+	//public async Task<Lobby[]> GetOpenLobbys()
+	//{
+	//	lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Lobbyname", "TestLobby").RequestAsync();
+	//	lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
+	//	if (lobbys == null)
+	//	{
+	//		Debug.Log("not found");
+	//		return lobbys;
+	//	}
+	//	else 
+	//	{
+	//		Debug.Log("found");
+	//		return lobbys;
+	//	}
+	//}
 }
