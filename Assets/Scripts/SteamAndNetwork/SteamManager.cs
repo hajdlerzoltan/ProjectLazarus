@@ -54,6 +54,7 @@ public class SteamManager : MonoBehaviour
 
 	private void OnApplicationQuit()
 	{
+		LeaveLobby();
 		SteamClient.Shutdown();
 	}
 

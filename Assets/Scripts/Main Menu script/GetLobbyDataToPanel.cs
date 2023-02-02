@@ -8,20 +8,15 @@ using TMPro;
 
 public class GetLobbyDataToPanel : MonoBehaviour
 {
-    public SteamId lobbyID;
+	public static GetLobbyDataToPanel Instance { get; set; }
+
+	public SteamId lobbyID;
     public string lobbyName;
     public TextMeshProUGUI lobbyNameText;
 
-    public void SetLobbyData() 
+    public void SetLobbyData(string lobbyOwner) 
     {
-        if (lobbyName == "")
-        {
-            lobbyNameText.text = $"{SteamClient.Name}'s lobby";
-        }
-        else 
-        {
-            lobbyNameText.text = lobbyName;
-        }
+        lobbyNameText.text = lobbyOwner;
     }
 
 

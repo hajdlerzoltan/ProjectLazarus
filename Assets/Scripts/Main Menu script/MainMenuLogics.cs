@@ -26,6 +26,7 @@ public class MainMenuLogics : MonoBehaviour
 	[SerializeField] Toggle IsLobbyPrivate;
 
 	List<Lobby> steamLobbies = new List<Lobby>();
+	List<GameObject> LobbyPrefabs= new List<GameObject>();
 
 	float updateDelay = 3f;
 
@@ -117,6 +118,15 @@ public class MainMenuLogics : MonoBehaviour
 		Lobby[] lobby = await SteamManager.Instance.GetOpenLobbys();
 		if (CheckPlayerIsInTheMainMenu())
 		{
+			GameObject[] steamLobbyInstances = GameObject.FindGameObjectsWithTag("OpenSteamLobby");
+			if (steamLobbyInstances != null)
+			{
+				foreach (var item in steamLobbyInstances)
+				{
+					Destroy(item);
+				}
+			}
+
 			if (lobby == null)
 			{
 				Debug.Log("no lobby found");
@@ -132,8 +142,9 @@ public class MainMenuLogics : MonoBehaviour
 
 				foreach (var item in steamLobbies)
 				{
-					GameObject lobbyOnUI = Instantiate(LobbyPanel, content.transform);
-					GameObject.Find("LobbyHostName").GetComponent<TextMeshProUGUI>().text = item.Owner.Name;
+					GameObject lobbyPanle = Instantiate(LobbyPanel, content.transform);
+					lobbyPanle.GetComponent<GetLobbyDataToPanel>().SetLobbyData(item.Owner.Name);
+					lobbyPanle.gameObject.transform.SetParent(content.transform, false);
 				}
 				steamLobbies.Clear();
 			}
