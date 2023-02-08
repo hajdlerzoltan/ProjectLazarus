@@ -843,3 +843,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyName: 
   lobbyNameText: {fileID: 2782212044543841527}
+  FreeSlotsText: {fileID: 2782212044139884675}

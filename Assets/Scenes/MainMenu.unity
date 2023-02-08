@@ -5428,6 +5428,7 @@ MonoBehaviour:
   LobbyPanel: {fileID: 2782212045498708436, guid: 6831bf21e2bf2dd4fb52d69446dbfacc,
     type: 3}
   IsLobbyPrivate: {fileID: 732322321}
+  mainmenu: {fileID: 1242752459}
 --- !u!4 &2049182822
 Transform:
   m_ObjectHideFlags: 0

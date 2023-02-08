@@ -3,15 +3,13 @@ using Steamworks.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Image = Steamworks.Data.Image;
 
 public class MainMenuLogics : MonoBehaviour
 {
@@ -24,9 +22,11 @@ public class MainMenuLogics : MonoBehaviour
 	[SerializeField] GameObject MainMenu;
 	[SerializeField] GameObject LobbyPanel;
 	[SerializeField] Toggle IsLobbyPrivate;
+	[SerializeField] GameObject mainmenu;
 
 	List<Lobby> steamLobbies = new List<Lobby>();
 	List<GameObject> LobbyPrefabs= new List<GameObject>();
+
 
 	float updateDelay = 3f;
 
@@ -51,11 +51,11 @@ public class MainMenuLogics : MonoBehaviour
 	{
 		if (IsLobbyPrivate.isOn)
 		{
-			SteamIntegration.Instance.CurrentLobby.Value.SetPrivate();
+			//Steamm.Instance.CurrentLobby.Value.SetPrivate();
 		}
 		else
 		{
-			SteamIntegration.Instance.CurrentLobby.Value.SetPublic();
+			//SteamIntegration.Instance.CurrentLobby.Value.SetPublic();
 		}
 	}
 
@@ -133,17 +133,26 @@ public class MainMenuLogics : MonoBehaviour
 			}
 			else
 			{
-				foreach (var item in lobby)
-				{
-					steamLobbies.Add(item);
-				}
+				//foreach (var item in lobby)
+				//{
+				//	Task t = Task.Run(() => item.Refresh());
+				//	t.Wait();
+				//	steamLobbies.Add(item);
+				//}
 
 				GameObject content = GameObject.Find("Content");
 
-				foreach (var item in steamLobbies)
+				foreach (var item in lobby)
 				{
+					//Task t = Task.Run(() => item.RefreshAsync());
+					//t.Wait();
+					//await item.RefreshAsync();
+					//var asd = item.Owner.Name;
 					GameObject lobbyPanle = Instantiate(LobbyPanel, content.transform);
-					lobbyPanle.GetComponent<GetLobbyDataToPanel>().SetLobbyData(item.Owner.Name);
+					lobbyPanle.GetComponent<GetLobbyDataToPanel>().SetLobbyData(item.Owner.Name,item.MaxMembers,item.MemberCount);
+					var avatar = GetAvatar(item.Owner.Id);
+					await Task.WhenAll(avatar);
+					lobbyPanle.GetComponentInChildren<RawImage>().texture = avatar.Result?.Covert();
 					lobbyPanle.gameObject.transform.SetParent(content.transform, false);
 				}
 				steamLobbies.Clear();
@@ -154,7 +163,6 @@ public class MainMenuLogics : MonoBehaviour
 	//Checking the player if he is in the menu or not
 	bool CheckPlayerIsInTheMainMenu() 
 	{
-		GameObject mainmenu = GameObject.Find("MainMenu");
 		if (!mainmenu.activeInHierarchy)
 		{
 			return false;
@@ -172,5 +180,63 @@ public class MainMenuLogics : MonoBehaviour
 			ShowOpenLobbys();
 			yield return new WaitForSecondsRealtime(delay);
 		}
+	}
+
+	private static async Task<Image?> GetAvatar(SteamId steamid)
+	{
+		try
+		{
+			// Get Avatar using await
+			return await SteamFriends.GetLargeAvatarAsync(steamid);
+		}
+		catch (Exception e)
+		{
+			// If something goes wrong, log it
+			Debug.Log(e);
+			return null;
+		}
+	}
+
+
+
+}
+public static class Enxtension
+{
+	public static Texture2D Covert(this Image image)
+	{
+		// Create a new Texture2D
+		var avatar = new Texture2D((int)image.Width, (int)image.Height, TextureFormat.ARGB32, false);
+
+		// Set filter type, or else its really blury
+		avatar.filterMode = FilterMode.Trilinear;
+
+		// Flip image
+		for (int x = 0; x < image.Width; x++)
+		{
+			for (int y = 0; y < image.Height; y++)
+			{
+				var p = image.GetPixel(x, y);
+				avatar.SetPixel(x, (int)image.Height - y, new UnityEngine.Color(p.r / 255.0f, p.g / 255.0f, p.b / 255.0f, p.a / 255.0f));
+			}
+		}
+
+		avatar.Apply();
+		return avatar;
+	}
+
+	public static async Task RefreshAsync(this Lobby lobby)
+	{
+		TaskCompletionSource<bool> resultWaiter = new TaskCompletionSource<bool>();
+		Action<Lobby> eventHandler = (Lobby queriedLobby) =>
+		{
+			if (lobby.Id != queriedLobby.Id) return;
+			resultWaiter.SetResult(true);
+		};
+
+		SteamMatchmaking.OnLobbyDataChanged += eventHandler;
+		lobby.Refresh();
+		var result = await resultWaiter.Task;
+		SteamMatchmaking.OnLobbyDataChanged -= eventHandler;
+		await Task.Yield();
 	}
 }

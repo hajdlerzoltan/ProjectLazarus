@@ -13,10 +13,22 @@ public class GetLobbyDataToPanel : MonoBehaviour
 	public SteamId lobbyID;
     public string lobbyName;
     public TextMeshProUGUI lobbyNameText;
+    public TextMeshProUGUI FreeSlotsText;
 
-    public void SetLobbyData(string lobbyOwner) 
+	public void SetLobbyData(string lobbyOwner,int maxMember,int currentMembers) 
     {
-        lobbyNameText.text = lobbyOwner;
+        if (lobbyOwner == "")
+        {
+            lobbyNameText.text = "Empty Name";
+        }
+        else
+        {
+            lobbyNameText.text = lobbyOwner;
+        }
+
+        int freeslots = maxMember - currentMembers;
+        FreeSlotsText.text = freeslots.ToString();
+
     }
 
 

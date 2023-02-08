@@ -34,6 +34,16 @@ public class SteamManager : MonoBehaviour
 	private void Start()
 	{
 		DontDestroyOnLoad(this);
+
+		try
+		{
+			SteamClient.Init(480, true);
+		}
+		catch (Exception e)
+		{
+			Debug.Log(e);
+		}
+
 		SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
 		SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
 		SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
@@ -108,8 +118,6 @@ public class SteamManager : MonoBehaviour
 		//lobby.SetPrivate();
 		lobby.SetPublic();
 		lobby.SetData("Game", "ProjectLazarus");
-
-		currentLobbyOwner = lobby.Owner.Name;
 		currentLobby = lobby;
 	}
 
@@ -125,20 +133,23 @@ public class SteamManager : MonoBehaviour
 
 	public async Task<Lobby[]> GetOpenLobbys()
 	{
-		SteamLobbies = null;
-		Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
+		//Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
+		Lobby[] lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
 		if (lobbys == null)
 		{
-			SteamLobbies = lobbys;
 			return lobbys;
 		}
 		else
 		{
-			SteamLobbies = lobbys;
+			foreach (var item in lobbys)
+			{
+				await item.RefreshAsync();
+			}
+			await Task.Yield();
 			return lobbys;
 		}
 	}
-
+	//only for debuging delete later
 	public async void FindOpenGameLobbys() 
 	{
 		Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
