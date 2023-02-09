@@ -1,218 +1,226 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using Netcode.Transports.Facepunch;
-using Steamworks;
-using Steamworks.Data;
-using System;
-using Unity.Netcode;
-using UnityEngine.SceneManagement;
+//using System.Collections;
+//using System.Collections.Generic;
+//using TMPro;
+//using UnityEngine;
+//using UnityEngine.UI;
+//using Netcode.Transports.Facepunch;
+//using Steamworks;
+//using Steamworks.Data;
+//using System;
+//using Unity.Netcode;
+//using UnityEngine.SceneManagement;
+//using System.Threading.Tasks;
 
-public class SteamIntegration : MonoBehaviour
-{
-
-
-	public static SteamIntegration Instance { get; private set; } = null;
-
-	private FacepunchTransport transport = null;
-
-	private ulong steamID;
-
-	public Lobby? CurrentLobby { get; set; } = null;
-
-	public Lobby[] lobbys = null;
+//public class SteamIntegration : MonoBehaviour
+//{
 
 
-	private void Awake()
-	{
-		if (Instance == null)
-		{
-			Instance = this;
-		}
-		else
-		{
-			Destroy(Instance);
-			return;
-		}
-	}
+//	public static SteamIntegration Instance { get; private set; } = null;
+
+//	private FacepunchTransport transport = null;
+
+//	private ulong steamID;
+
+//	public Lobby? CurrentLobby { get; set; } = null;
+
+//	public Lobby[] lobbys = null;
 
 
-	// Start is called before the first frame update
-	void Start()
-	{
-		transport = GetComponent<FacepunchTransport>();
-		SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
-		SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
-		SteamMatchmaking.OnLobbyMemberJoined += OnLobbyJoin;
-		SteamMatchmaking.OnLobbyMemberLeave += OnLobbyLeave;
-		SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
-		SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
-		SteamFriends.OnGameLobbyJoinRequested += OnLobbyJoinRequest;
+//	private void Awake()
+//	{
 
-		steamID = SteamClient.SteamId.Value;
+//		if (Instance == null)
+//		{
+//			Instance = this;
+//		}
+//		else
+//		{
+//			Destroy(Instance);
+//			return;
+//		}
 
-	}
-
-	private void Update()
-	{
-		SteamClient.RunCallbacks();
-	}
-
-	private void OnDestroy()
-	{
-		SteamMatchmaking.OnLobbyCreated -= OnLobbyCreated;
-		SteamMatchmaking.OnLobbyEntered -= OnLobbyEntered;
-		SteamMatchmaking.OnLobbyMemberJoined -= OnLobbyJoin;
-		SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyLeave;
-		SteamMatchmaking.OnLobbyInvite -= OnLobbyInvite;
-		SteamMatchmaking.OnLobbyGameCreated -= OnLobbyGameCreated;
-		SteamFriends.OnGameLobbyJoinRequested -= OnLobbyJoinRequest;
-		NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-		NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-		NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
-
-		Disconnect();
-		SteamClient.Shutdown();
-	}
-
-	private void OnApplicationQuit()
-	{
-
-		SteamClient.Shutdown();
-		Disconnect();
-	}
+//	}
 
 
+//	Start is called before the first frame update
+//	void Start()
+//	{
+//		transport = GetComponent<FacepunchTransport>();
+//		SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
+//		SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
+//		SteamMatchmaking.OnLobbyMemberJoined += OnLobbyJoin;
+//		SteamMatchmaking.OnLobbyMemberLeave += OnLobbyLeave;
+//		SteamMatchmaking.OnLobbyInvite += OnLobbyInvite;
+//		SteamMatchmaking.OnLobbyGameCreated += OnLobbyGameCreated;
+//		SteamFriends.OnGameLobbyJoinRequested += OnLobbyJoinRequest;
 
-	public async void StartHost(int maxMembers = 4)
-	{
-		NetworkManager.Singleton.StartHost();
+//		steamID = SteamClient.SteamId.Value;
 
-		NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+//	}
 
-		Debug.Log("Hosting is started!");
+//	private void Update()
+//	{
+//		SteamClient.RunCallbacks();
+//	}
 
-		await SteamMatchmaking.CreateLobbyAsync();
-	}
+//	private void OnDestroy()
+//	{
+//		SteamMatchmaking.OnLobbyCreated -= OnLobbyCreated;
+//		SteamMatchmaking.OnLobbyEntered -= OnLobbyEntered;
+//		SteamMatchmaking.OnLobbyMemberJoined -= OnLobbyJoin;
+//		SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyLeave;
+//		SteamMatchmaking.OnLobbyInvite -= OnLobbyInvite;
+//		SteamMatchmaking.OnLobbyGameCreated -= OnLobbyGameCreated;
+//		SteamFriends.OnGameLobbyJoinRequested -= OnLobbyJoinRequest;
+//		NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+//		NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+//		NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
 
-	public void Disconnect() 
-	{
-		CurrentLobby?.Leave();
-		if (NetworkManager.Singleton == null)
-		{
-			return;
-		}
-		else if (NetworkManager.Singleton !=null)
-		{
-			NetworkManager.Singleton.Shutdown();
-		}
-		
-	}
+//		Disconnect();
+//		SteamClient.Shutdown();
+//	}
+
+//	private void OnApplicationQuit()
+//	{
+
+//		SteamClient.Shutdown();
+//		Disconnect();
+//	}
 
 
-	public void StartClient(SteamId id)
-	{
-		NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
-		NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
 
-		transport.targetSteamId = id;
+//	public async void StartHost(int maxMembers = 4)
+//	{
+//		NetworkManager.Singleton.StartHost();
 
-		if (NetworkManager.Singleton.StartClient())
-		{
-			Debug.Log("Client is started!");
-		}
-	}
+//		NetworkManager.Singleton.OnServerStarted += OnServerStarted;
 
-	#region SteamCallbacks
-	private void OnLobbyJoinRequest(Lobby lobby, SteamId id)
-	{
-		StartClient(id);
-	}
+//		Debug.Log("Hosting is started!");
 
-	private void OnLobbyGameCreated(Lobby lobby, uint ip, ushort port, SteamId id)
-	{
-		
-	}
+//		await SteamMatchmaking.CreateLobbyAsync();
+//	}
 
-	private void OnLobbyInvite(Friend friend, Lobby lobby)
-	{
-		Debug.Log($"you have been invited by {friend.Name}");
-	}
+//	public void Disconnect()
+//	{
+//		CurrentLobby?.Leave();
+//		if (NetworkManager.Singleton == null)
+//		{
+//			return;
+//		}
+//		else if (NetworkManager.Singleton != null)
+//		{
+//			NetworkManager.Singleton.Shutdown();
+//		}
 
-	private void OnLobbyLeave(Lobby lobby, Friend friend)
-	{
+//	}
 
-	}
 
-	private void OnLobbyJoin(Lobby lobby, Friend friend)
-	{
-		Debug.Log($"Client connected by himself: {friend.Id}");
-		StartClient(friend.Id);
-	}
+//	public void StartClient(SteamId id)
+//	{
+//		NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
+//		NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
 
-	private void OnLobbyEntered(Lobby lobby)
-	{
-		if (NetworkManager.Singleton.IsHost)
-		{
-			return;
-		}
-		else if (NetworkManager.Singleton.IsClient)
-		{
-			//MainMenuLogics.Instance.SwitchMainToLobby();
-			StartClient(lobby.Id);
-		}
+//		transport.targetSteamId = id;
 
-	}
+//		if (NetworkManager.Singleton.StartClient())
+//		{
+//			Debug.Log("Client is started!");
+//		}
+//	}
 
-	private void OnLobbyCreated(Result result, Lobby lobby)
-	{
-		if (result != Result.OK)
-		{
-			Debug.Log($"Cant Create a lobby! --- {result}");
-		}
+//	#region SteamCallbacks
+//	private void OnLobbyJoinRequest(Lobby lobby, SteamId id)
+//	{
+//		StartClient(id);
+//	}
 
-		lobby.SetFriendsOnly();
-		lobby.SetData("Lobbyname", "TestLobby");
-		var asd = lobby.GetData("Lobbyname");
-		lobby.SetJoinable(true);
-		CurrentLobby = lobby;
-		Debug.Log("Lobby created");
-	}
-	#endregion
+//	private void OnLobbyGameCreated(Lobby lobby, uint ip, ushort port, SteamId id)
+//	{
 
-	#region NetworkCallbacks
-	public void OnServerStarted()
-	{
-		NetworkManager.Singleton.StartHost();
-		Debug.Log("Server started");
-		NetworkManager.Singleton.SceneManager.LoadScene("testEnv", LoadSceneMode.Single);
-	}
+//	}
 
-	private void OnClientDisconnectCallback(ulong clientID)
-	{
-		NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-		NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-		Debug.Log($"Client disconnected: {clientID}");
-	}
+//	private void OnLobbyInvite(Friend friend, Lobby lobby)
+//	{
+//		Debug.Log($"you have been invited by {friend.Name}");
+//	}
 
-	private void OnClientConnectedCallback(ulong clientID)
-	{
-		Debug.Log($"Client connected: {clientID}");
-	}
-	#endregion
+//	private void OnLobbyLeave(Lobby lobby, Friend friend)
+//	{
 
-	public async void GetOpenLobbys() 
-	{
-		lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Lobbyname", "TestLobby").RequestAsync();
-		if (lobbys == null)
-		{
-			Debug.Log("not found");
-		}
-		else 
-		{
-			Debug.Log("found");
-		}
-	}
-}
+//	}
+
+//	private void OnLobbyJoin(Lobby lobby, Friend friend)
+//	{
+//		Debug.Log($"Client connected by himself: {friend.Id}");
+//		StartClient(friend.Id);
+//	}
+
+//	private void OnLobbyEntered(Lobby lobby)
+//	{
+//		if (NetworkManager.Singleton.IsHost)
+//		{
+//			return;
+//		}
+//		else if (NetworkManager.Singleton.IsClient)
+//		{
+//			MainMenuLogics.Instance.SwitchMainToLobby();
+//			StartClient(lobby.Id);
+//		}
+
+//	}
+
+//	private async void OnLobbyCreated(Result result, Lobby lobby)
+//	{
+//		if (result != Result.OK)
+//		{
+//			Debug.Log($"Cant Create a lobby! --- {result}");
+//		}
+
+//		lobby.SetFriendsOnly();
+//		lobby.SetData("Lobbyname", "TestLobby");
+//		var asd = lobby.GetData("Lobbyname");
+//		lobby.SetJoinable(true);
+//		CurrentLobby = lobby;
+
+//		Lobby[] lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
+//		Debug.Log("Lobby created");
+//	}
+//	#endregion
+
+//	#region NetworkCallbacks
+//	public void OnServerStarted()
+//	{
+//		NetworkManager.Singleton.StartHost();
+//		Debug.Log("Server started");
+//		NetworkManager.Singleton.SceneManager.LoadScene("testEnv", LoadSceneMode.Single);
+//	}
+
+//	private void OnClientDisconnectCallback(ulong clientID)
+//	{
+//		NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+//		NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+//		Debug.Log($"Client disconnected: {clientID}");
+//	}
+
+//	private void OnClientConnectedCallback(ulong clientID)
+//	{
+//		Debug.Log($"Client connected: {clientID}");
+//	}
+//	#endregion
+
+//	public async Task<Lobby[]> GetOpenLobbys()
+//	{
+//		lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Lobbyname", "TestLobby").RequestAsync();
+//		lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
+//		if (lobbys == null)
+//		{
+//			Debug.Log("not found");
+//			return lobbys;
+//		}
+//		else
+//		{
+//			Debug.Log("found");
+//			return lobbys;
+//		}
+//	}
+//}
