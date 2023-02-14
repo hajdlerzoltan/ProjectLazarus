@@ -58,25 +58,25 @@
   <ItemGroup>
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\SkewingHandleEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\ConfigOverrideEditor.cs" />
+    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\DynamicOcclusionRaycastingEditor.cs" />
+    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\TriggerZoneEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EffectPulseEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EditorData.cs" />
+    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\OnBuildPostprocess.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\ConfigEditor.cs" />
+    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EditorStrings.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\FoldableHeader.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\OnBuildTargetChanged.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\DynamicOcclusionDepthBufferEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EditorExtensions.cs" />
+    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EffectAbstractBaseEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\VolumetricLightBeamEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EditorCommon.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\DynamicOcclusionAbstractBaseEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\TargetList.cs" />
+    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EffectFlickerEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\VolumetricDustParticlesEditor.cs" />
     <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\OnBuildPreprocess.cs" />
-    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\DynamicOcclusionRaycastingEditor.cs" />
-    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\TriggerZoneEditor.cs" />
-    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\OnBuildPostprocess.cs" />
-    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EditorStrings.cs" />
-    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EffectAbstractBaseEditor.cs" />
-    <Compile Include="Assets\Plugins\VolumetricLightBeam\Editor\EffectFlickerEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -341,16 +341,19 @@
       <HintPath>Library\PackageCache\com.unity.collections@1.2.4\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.17.7\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.0.0\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.17.7\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.0.0\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.YamlDotNet">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Burst.Cecil.Mdb">
-      <HintPath>Library\PackageCache\com.unity.burst@1.8.2\Unity.Burst.CodeGen\Unity.Burst.Cecil.Mdb.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.Mdb.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\EditorAssetResources\Unity.VisualScripting.TextureAssets.dll</HintPath>
@@ -359,19 +362,19 @@
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
     </Reference>
     <Reference Include="unityplastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.17.7\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.0.0\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Cecil.Pdb">
-      <HintPath>Library\PackageCache\com.unity.burst@1.8.2\Unity.Burst.CodeGen\Unity.Burst.Cecil.Pdb.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Cecil">
-      <HintPath>Library\PackageCache\com.unity.burst@1.8.2\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="log4netPlastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.17.7\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.0.0\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Cecil.Rocks">
-      <HintPath>Library\PackageCache\com.unity.burst@1.8.2\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.8.0\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
@@ -805,8 +808,8 @@
     <Reference Include="Unity.Multiplayer.Samples.Utilities.ClientAuthority">
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Samples.Utilities.ClientAuthority.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Searcher.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
+    <Reference Include="Unity.Multiplayer.Tools.MetricTypes">
+      <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.MetricTypes.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Model">
       <HintPath>Library\ScriptAssemblies\Unity.TestTools.CodeCoverage.Editor.OpenCover.Model.dll</HintPath>
@@ -816,9 +819,6 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Multiplayer.Tools.MetricTypes">
-      <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.MetricTypes.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection">
       <HintPath>Library\ScriptAssemblies\Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.dll</HintPath>
@@ -834,9 +834,6 @@
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Multiplayer.Tools.NetStatsReporting">
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.NetStatsReporting.dll</HintPath>
@@ -862,17 +859,11 @@
     <Reference Include="Unity.Netcode.Components">
       <HintPath>Library\ScriptAssemblies\Unity.Netcode.Components.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.ShaderGraph.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Multiplayer.Tools.Initialization">
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.Initialization.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.HighDefinition.Config.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections">
       <HintPath>Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
@@ -895,9 +886,6 @@
     <Reference Include="Unity.Multiplayer.Tools.NetworkSolutionInterface">
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.NetworkSolutionInterface.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualEffectGraph.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualEffectGraph.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.InternalAPIEditorBridge.007">
       <HintPath>Library\ScriptAssemblies\Unity.InternalAPIEditorBridge.007.dll</HintPath>
     </Reference>
@@ -906,9 +894,6 @@
     </Reference>
     <Reference Include="Unity.Multiplayer.Tools.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualEffectGraph.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualEffectGraph.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Profiling.Core">
       <HintPath>Library\ScriptAssemblies\Unity.Profiling.Core.dll</HintPath>
@@ -925,26 +910,17 @@
     <Reference Include="Unity.Burst.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Core.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.HighDefinition.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.HighDefinition.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Multiplayer.Tools.NetStatsMonitor.Component">
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.NetStatsMonitor.Component.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Core.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PlasticSCM.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Netcode.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.Netcode.Runtime.dll</HintPath>
@@ -988,9 +964,6 @@
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Services.QoS">
       <HintPath>Library\ScriptAssemblies\Unity.Services.QoS.dll</HintPath>
     </Reference>
@@ -999,9 +972,6 @@
     </Reference>
     <Reference Include="Unity.Multiplayer.Tools.NetStatsMonitor.Implementation">
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Tools.NetStatsMonitor.Implementation.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>

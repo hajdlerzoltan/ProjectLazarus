@@ -23,17 +23,14 @@ public class MainMenuLogics : MonoBehaviour
 	[SerializeField] GameObject LobbyPanel;
 	[SerializeField] Toggle IsLobbyPrivate;
 	[SerializeField] GameObject mainmenu;
-
-	List<Lobby> steamLobbies = new List<Lobby>();
-	List<GameObject> LobbyPrefabs= new List<GameObject>();
-
+	Lobby[] lobby;
 
 	float updateDelay = 3f;
 
 	public static MainMenuLogics Instance { get; private set; } = null;
 
 	// Start is called before the first frame update
-	void Start()
+	async void Start()
     {
         joinViaCodeButton.interactable = false;
 
@@ -115,9 +112,10 @@ public class MainMenuLogics : MonoBehaviour
 
 	async void ShowOpenLobbys() 
 	{
-		Lobby[] lobby = await SteamManager.Instance.GetOpenLobbys();
 		if (CheckPlayerIsInTheMainMenu())
 		{
+			lobby = await SteamManager.Instance.GetOpenLobbys();
+
 			GameObject[] steamLobbyInstances = GameObject.FindGameObjectsWithTag("OpenSteamLobby");
 			if (steamLobbyInstances != null)
 			{
@@ -133,29 +131,18 @@ public class MainMenuLogics : MonoBehaviour
 			}
 			else
 			{
-				//foreach (var item in lobby)
-				//{
-				//	Task t = Task.Run(() => item.Refresh());
-				//	t.Wait();
-				//	steamLobbies.Add(item);
-				//}
 
 				GameObject content = GameObject.Find("Content");
 
 				foreach (var item in lobby)
 				{
-					//Task t = Task.Run(() => item.RefreshAsync());
-					//t.Wait();
-					//await item.RefreshAsync();
-					//var asd = item.Owner.Name;
 					GameObject lobbyPanle = Instantiate(LobbyPanel, content.transform);
 					lobbyPanle.GetComponent<GetLobbyDataToPanel>().SetLobbyData(item.Owner.Name,item.MaxMembers,item.MemberCount);
 					var avatar = GetAvatar(item.Owner.Id);
 					await Task.WhenAll(avatar);
 					lobbyPanle.GetComponentInChildren<RawImage>().texture = avatar.Result?.Covert();
 					lobbyPanle.gameObject.transform.SetParent(content.transform, false);
-				}
-				steamLobbies.Clear();
+				}				
 			}
 		}
 
@@ -173,7 +160,16 @@ public class MainMenuLogics : MonoBehaviour
 		}
 	}
 
-	IEnumerator UpdateLobbyUI(float delay) 
+	//IEnumerator UpdateLobbyUI(float delay) 
+	//{
+	//	while (true)
+	//	{
+	//		ShowOpenLobbys();
+	//		yield return new WaitForSecondsRealtime(delay);
+	//	}
+	//}
+
+	IEnumerator UpdateLobbyUI(float delay)
 	{
 		while (true)
 		{
@@ -181,6 +177,7 @@ public class MainMenuLogics : MonoBehaviour
 			yield return new WaitForSecondsRealtime(delay);
 		}
 	}
+
 
 	private static async Task<Image?> GetAvatar(SteamId steamid)
 	{
@@ -224,9 +221,10 @@ public static class Enxtension
 		return avatar;
 	}
 
-	public static async Task RefreshAsync(this Lobby lobby)
+	public static async Task<Lobby> RefreshAsync(this Lobby lobby)
 	{
 		TaskCompletionSource<bool> resultWaiter = new TaskCompletionSource<bool>();
+		bool isOwnerGotName = false;
 		Action<Lobby> eventHandler = (Lobby queriedLobby) =>
 		{
 			if (lobby.Id != queriedLobby.Id) return;
@@ -235,8 +233,17 @@ public static class Enxtension
 
 		SteamMatchmaking.OnLobbyDataChanged += eventHandler;
 		lobby.Refresh();
+		while (isOwnerGotName == false)
+		{
+			if (lobby.Owner.Name !="")
+			{
+				isOwnerGotName = true;
+			}
+		}
+		
 		var result = await resultWaiter.Task;
 		SteamMatchmaking.OnLobbyDataChanged -= eventHandler;
 		await Task.Yield();
+		return lobby;
 	}
 }

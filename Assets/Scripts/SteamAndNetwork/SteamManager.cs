@@ -10,6 +10,8 @@ using System;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System.Linq;
+
 public class SteamManager : MonoBehaviour
 {
 	//singleton instance
@@ -34,15 +36,6 @@ public class SteamManager : MonoBehaviour
 	private void Start()
 	{
 		DontDestroyOnLoad(this);
-
-		try
-		{
-			SteamClient.Init(480, true);
-		}
-		catch (Exception e)
-		{
-			Debug.Log(e);
-		}
 
 		SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
 		SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
@@ -94,7 +87,7 @@ public class SteamManager : MonoBehaviour
 	}
 
 	//Callback on the SteamAPI when someone join on you by the steam overlay
-	private async void OnLobbyMemberJoined(Lobby lobby, Friend friend)
+	private void OnLobbyMemberJoined(Lobby lobby, Friend friend)
 	{
 		
 		Debug.Log($"{friend.Name} joined...");
@@ -131,24 +124,40 @@ public class SteamManager : MonoBehaviour
 		currentLobby.Leave();
 	}
 
+	//public async Task<Lobby[]> GetOpenLobbys()
+	//{
+	//	//Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
+	//	Lobby[] lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
+	//	if (lobbys == null)
+	//	{
+	//		return lobbys;
+	//	}
+	//	else
+	//	{
+	//		foreach (var item in lobbys)
+	//		{
+	//			item.Refresh();
+	//		}
+	//		return lobbys;
+	//	}
+	//}
+
 	public async Task<Lobby[]> GetOpenLobbys()
 	{
 		//Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
-		Lobby[] lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
-		if (lobbys == null)
+		Lobby[] lobbys = await Task.Run(() => SteamMatchmaking.LobbyList.RequestAsync());
+		List<Task<Lobby>> tasks = new List<Task<Lobby>>();
+		foreach (var item in lobbys)
 		{
-			return lobbys;
+
+			tasks.Add(Task.Run(() => item.RefreshAsync()));
 		}
-		else
-		{
-			foreach (var item in lobbys)
-			{
-				await item.RefreshAsync();
-			}
-			await Task.Yield();
-			return lobbys;
-		}
+
+		var result = await Task.WhenAll(tasks);
+		return result;
 	}
+
+
 	//only for debuging delete later
 	public async void FindOpenGameLobbys() 
 	{
