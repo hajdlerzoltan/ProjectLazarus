@@ -47,7 +47,7 @@ public class SteamManager : MonoBehaviour
 
 	private void Update()
 	{
-		SteamClient.RunCallbacks();
+		//SteamClient.RunCallbacks();
 	}
 
 	private void OnDisable()

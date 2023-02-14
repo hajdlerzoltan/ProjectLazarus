@@ -25,7 +25,7 @@ public class MainMenuLogics : MonoBehaviour
 	[SerializeField] GameObject mainmenu;
 	Lobby[] lobby;
 
-	float updateDelay = 3f;
+	float updateDelay = 10f;
 
 	public static MainMenuLogics Instance { get; private set; } = null;
 
@@ -232,9 +232,10 @@ public static class Enxtension
 		};
 
 		SteamMatchmaking.OnLobbyDataChanged += eventHandler;
-		lobby.Refresh();
+		
 		while (isOwnerGotName == false)
 		{
+			lobby.Refresh();
 			if (lobby.Owner.Name !="")
 			{
 				isOwnerGotName = true;
