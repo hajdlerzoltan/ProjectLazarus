@@ -15,7 +15,7 @@ public class GetLobbyDataToPanel : MonoBehaviour
     public TextMeshProUGUI lobbyNameText;
     public TextMeshProUGUI FreeSlotsText;
 
-	public void SetLobbyData(string lobbyOwner,int maxMember,int currentMembers) 
+	public void SetLobbyData(string lobbyOwner,int maxMember,int currentMembers, SteamId lobbyId) 
     {
         if (lobbyOwner == "")
         {
@@ -28,6 +28,7 @@ public class GetLobbyDataToPanel : MonoBehaviour
 
         int freeslots = maxMember - currentMembers;
         FreeSlotsText.text = freeslots.ToString();
+        lobbyID = lobbyId;
 
     }
 
@@ -35,6 +36,7 @@ public class GetLobbyDataToPanel : MonoBehaviour
 
     public void JoinLobby() 
     {
-        SteamMatchmaking.JoinLobbyAsync(lobbyID);
-    }
+		//MainMenuLogics.Instance.SwitchMainToLobby();
+		SteamMatchmaking.JoinLobbyAsync(lobbyID);
+	}
 }

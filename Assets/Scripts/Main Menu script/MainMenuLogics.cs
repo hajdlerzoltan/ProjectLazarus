@@ -21,16 +21,25 @@ public class MainMenuLogics : MonoBehaviour
 	[SerializeField] GameObject LobbyMenu;
 	[SerializeField] GameObject MainMenu;
 	[SerializeField] GameObject LobbyPanel;
+	[SerializeField] GameObject PlayerInLobbyPanel;
 	[SerializeField] Toggle IsLobbyPrivate;
-	[SerializeField] GameObject mainmenu;
+	//[SerializeField] GameObject MainMenuGameObject;
 	Lobby[] lobby;
 
 	float updateDelay = 10f;
 
 	public static MainMenuLogics Instance { get; private set; } = null;
 
+	private void Awake()
+	{
+		if (Instance == null)
+		{
+			Instance = this;
+		}
+	}
+
 	// Start is called before the first frame update
-	async void Start()
+	void Start()
     {
         joinViaCodeButton.interactable = false;
 
@@ -48,11 +57,11 @@ public class MainMenuLogics : MonoBehaviour
 	{
 		if (IsLobbyPrivate.isOn)
 		{
-			//Steamm.Instance.CurrentLobby.Value.SetPrivate();
+			SteamManager.Instance.currentLobby.SetPrivate();
 		}
 		else
 		{
-			//SteamIntegration.Instance.CurrentLobby.Value.SetPublic();
+			SteamManager.Instance.currentLobby.SetPublic();
 		}
 	}
 
@@ -137,7 +146,7 @@ public class MainMenuLogics : MonoBehaviour
 				foreach (var item in lobby)
 				{
 					GameObject lobbyPanle = Instantiate(LobbyPanel, content.transform);
-					lobbyPanle.GetComponent<GetLobbyDataToPanel>().SetLobbyData(item.Owner.Name,item.MaxMembers,item.MemberCount);
+					lobbyPanle.GetComponent<GetLobbyDataToPanel>().SetLobbyData(item.Owner.Name,item.MaxMembers,item.MemberCount,item.Id);
 					var avatar = GetAvatar(item.Owner.Id);
 					await Task.WhenAll(avatar);
 					lobbyPanle.GetComponentInChildren<RawImage>().texture = avatar.Result?.Covert();
@@ -150,7 +159,7 @@ public class MainMenuLogics : MonoBehaviour
 	//Checking the player if he is in the menu or not
 	bool CheckPlayerIsInTheMainMenu() 
 	{
-		if (!mainmenu.activeInHierarchy)
+		if (!MainMenu.activeInHierarchy)
 		{
 			return false;
 		}
@@ -160,14 +169,18 @@ public class MainMenuLogics : MonoBehaviour
 		}
 	}
 
-	//IEnumerator UpdateLobbyUI(float delay) 
-	//{
-	//	while (true)
-	//	{
-	//		ShowOpenLobbys();
-	//		yield return new WaitForSecondsRealtime(delay);
-	//	}
-	//}
+	//Checking if the player is the lobby owner, if not the lobby privacy setting is diasbled
+	public void CheckIfThePlayerIsLobbyOwner() 
+	{
+		if (SteamManager.Instance.currentLobby.Owner.Id != SteamClient.SteamId)
+		{
+			IsLobbyPrivate.enabled = false;
+		}
+		else
+		{
+			IsLobbyPrivate.enabled = true;
+		}
+	}
 
 	IEnumerator UpdateLobbyUI(float delay)
 	{
@@ -194,7 +207,10 @@ public class MainMenuLogics : MonoBehaviour
 		}
 	}
 
-
+	public void QuitGame() 
+	{
+		Application.Quit();
+	}
 
 }
 public static class Enxtension

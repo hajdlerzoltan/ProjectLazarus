@@ -86,10 +86,10 @@ public class SteamManager : MonoBehaviour
 		Debug.Log("client joined");
 	}
 
-	//Callback on the SteamAPI when someone join on you by the steam overlay
+	//Callback on the SteamAPI when someone join to the lobby
 	private void OnLobbyMemberJoined(Lobby lobby, Friend friend)
 	{
-		
+		MainMenuLogics.Instance.SwitchMainToLobby();
 		Debug.Log($"{friend.Name} joined...");
 	}
 
@@ -108,15 +108,16 @@ public class SteamManager : MonoBehaviour
 		Lobby lobby = (Lobby)await SteamMatchmaking.CreateLobbyAsync(4);
 
 		lobby.SetJoinable(true);
-		//lobby.SetPrivate();
-		lobby.SetPublic();
+		lobby.SetPrivate();
+		//lobby.SetPublic();
 		lobby.SetData("Game", "ProjectLazarus");
 		currentLobby = lobby;
 	}
 
 	public void JoinLobby() 
 	{
-		
+		MainMenuLogics.Instance.SwitchMainToLobby();
+		Debug.Log("JoinLobby callback");
 	}
 
 	public void LeaveLobby() 
@@ -124,33 +125,18 @@ public class SteamManager : MonoBehaviour
 		currentLobby.Leave();
 	}
 
-	//public async Task<Lobby[]> GetOpenLobbys()
-	//{
-	//	//Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
-	//	Lobby[] lobbys = await SteamMatchmaking.LobbyList.RequestAsync();
-	//	if (lobbys == null)
-	//	{
-	//		return lobbys;
-	//	}
-	//	else
-	//	{
-	//		foreach (var item in lobbys)
-	//		{
-	//			item.Refresh();
-	//		}
-	//		return lobbys;
-	//	}
-	//}
-
 	public async Task<Lobby[]> GetOpenLobbys()
 	{
-		//Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
-		Lobby[] lobbys = await Task.Run(() => SteamMatchmaking.LobbyList.RequestAsync());
+		Lobby[] lobbys = await SteamMatchmaking.LobbyList.WithKeyValue("Game", "ProjectLazarus").RequestAsync();
+		//Lobby[] lobbys = await Task.Run(() => SteamMatchmaking.LobbyList.RequestAsync());
 		List<Task<Lobby>> tasks = new List<Task<Lobby>>();
-		foreach (var item in lobbys)
+		if (lobbys != null)
 		{
+			foreach (var item in lobbys)
+			{
 
-			tasks.Add(Task.Run(() => item.RefreshAsync()));
+				tasks.Add(Task.Run(() => item.RefreshAsync()));
+			}
 		}
 
 		var result = await Task.WhenAll(tasks);
